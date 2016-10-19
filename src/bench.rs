@@ -13,7 +13,7 @@ use rand::{Rng, weak_rng, XorShiftRng};
 
 use test::{Bencher, black_box};
 
-const BENCH_BITS : usize = 1 << 14;
+const BENCH_BITS: usize = 1 << 14;
 const U32_BITS: usize = 32;
 
 fn rng() -> XorShiftRng {
@@ -72,9 +72,7 @@ fn bench_bit_set_small(b: &mut Bencher) {
 fn bench_bit_vec_big_union(b: &mut Bencher) {
     let mut b1 = BitVec::from_elem(BENCH_BITS, false);
     let b2 = BitVec::from_elem(BENCH_BITS, false);
-    b.iter(|| {
-        b1.union(&b2)
-    })
+    b.iter(|| b1.union(&b2))
 }
 
 #[bench]
@@ -109,8 +107,27 @@ fn bench_from_elem(b: &mut Bencher) {
     let bit = black_box(true);
     b.iter(|| {
         // create a BitVec and popcount it
-        BitVec::from_elem(cap, bit).blocks()
-                                   .fold(0, |acc, b| acc + b.count_ones())
+        BitVec::from_elem(cap, bit)
+            .blocks()
+            .fold(0, |acc, b| acc + b.count_ones())
     });
     b.bytes = cap as u64 / 8;
+}
+
+#[bench]
+fn bench_push_1k(b: &mut Bencher) {
+    let src = vec![true; 1000];
+    b.iter(|| {
+        let bv = src.iter().map(|b| *b).collect::<BitVec>();
+        assert_eq!(src.len(), bv.len());
+    });
+}
+
+#[bench]
+fn bench_push_10k(b: &mut Bencher) {
+    let src = vec![true; 10000];
+    b.iter(|| {
+        let bv = src.iter().map(|b| *b).collect::<BitVec>();
+        assert_eq!(src.len(), bv.len());
+    });
 }
