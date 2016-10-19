@@ -115,19 +115,24 @@ fn bench_from_elem(b: &mut Bencher) {
 }
 
 #[bench]
-fn bench_push_1k(b: &mut Bencher) {
-    let src = vec![true; 1000];
+fn bench_push_10k(b: &mut Bencher) {
+    let src = vec![true; 10000];
+    b.bytes = src.len() as u64; // a bool fits in 1 byte
     b.iter(|| {
-        let bv = src.iter().map(|b| *b).collect::<BitVec>();
-        assert_eq!(src.len(), bv.len());
+        let mut bv = BitVec::new();
+        for elem in src.iter() {
+            bv.push(*elem);
+        }
     });
 }
 
 #[bench]
-fn bench_push_10k(b: &mut Bencher) {
+fn bench_extend_10k(b: &mut Bencher) {
     let src = vec![true; 10000];
+    b.bytes = src.len() as u64; // a bool fits in 1 byte
     b.iter(|| {
-        let bv = src.iter().map(|b| *b).collect::<BitVec>();
+        let mut bv = BitVec::new();
+        bv.extend(src.iter().map(|b| *b));
         assert_eq!(src.len(), bv.len());
     });
 }
