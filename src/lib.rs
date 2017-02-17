@@ -88,6 +88,9 @@
 extern crate test;
 #[cfg(all(test, feature = "nightly"))]
 extern crate rand;
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
 
 use std::cmp::Ordering;
 use std::cmp;
@@ -208,6 +211,7 @@ static FALSE: bool = false;
 /// println!("{:?}", bv);
 /// println!("total bits set to true: {}", bv.iter().filter(|x| *x).count());
 /// ```
+#[derive(Serialize, Deserialize)]
 pub struct BitVec<B = self::B> {
     /// Internal representation of the bit vector
     storage: Vec<B>,
