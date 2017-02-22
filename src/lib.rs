@@ -458,7 +458,7 @@ impl<B: BitBlock> BitVec<B> {
     }
 
     #[inline]
-    unsafe fn get_unchecked(&self, i: usize) -> bool {
+    pub unsafe fn get_unchecked(&self, i: usize) -> bool {
         let w = B::index_word(i);
         let b = B::index_bit(i);
         (*self.storage.get_unchecked(w) & (B::one() << b)) != B::zero()
@@ -489,7 +489,7 @@ impl<B: BitBlock> BitVec<B> {
     }
 
     #[inline]
-    unsafe fn set_unchecked(&mut self, i: usize, x: bool) {
+    pub unsafe fn set_unchecked(&mut self, i: usize, x: bool) {
         let w = B::index_word(i);
         let b = B::index_bit(i);
         let flag = B::one() << b;
